@@ -31,7 +31,9 @@ MESSAGE_TYPES = {
 
 # ------------
 def initialize_device(port, baud_rate):
-    """Reset the ESP* and then change its baud rate"""
+    """
+    Change the ESP*'s baud rate
+    """
 
     print('Initiating connection...')
 
@@ -48,6 +50,10 @@ def initialize_device(port, baud_rate):
 
 # ----
 def do_flash(rom_file, port, baud_rate, do_erase, do_write):
+    """
+    The bulk of the script logic; sends all flashing-related commands
+    """
+
     print('Reading file...')
 
     with open(rom_file, 'rb') as rfile:
@@ -119,8 +125,11 @@ def do_flash(rom_file, port, baud_rate, do_erase, do_write):
 # Helper methods
 
 def handle_serial_message(serial_connection, mute_info=False, mandatory=False):
-    # Returns: message_data
-    # Raises exception on errors
+    """
+    Echoes INFO messages if mute_info is not True
+    Raises exception on errors and unknown message types
+    Returns message data for MD5 and INFO
+    """
 
     data = serial_connection.readline()
     output = data.decode('ascii').strip()
@@ -151,8 +160,10 @@ def handle_serial_message(serial_connection, mute_info=False, mandatory=False):
 
 # ----
 def write_command(serial_connection, command, data=None):
-    # Handles conversion of commands to friendly names, data to expected form,
-    # and the overall message to the correct format
+    """
+    Handles conversion of commands to friendly names, data to expected form,
+    and the overall message to the correct format.
+    """
 
     if type(data) is int:
         data = data.to_bytes(4, 'little')  # unsigned 32-bit int
@@ -164,6 +175,10 @@ def write_command(serial_connection, command, data=None):
 
 # ------------
 def main():
+    """
+    Handle arguments and run script
+    """
+
     parser = argparse.ArgumentParser(description='Basic ROM Flasher')
 
     parser.add_argument('-file', nargs='?', required=True, help='The file to flash to the ROM')
