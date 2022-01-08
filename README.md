@@ -27,11 +27,7 @@
 &nbsp;
 
 #### Flashing the image to the chip
-1) `spi_flasher.exe -port COM[3] -baud 921600 -file bios.rom --erase --write`
-
-or
-
-1) `python spi_flasher.py -port [PORT] -baud 921600 -file bios.rom --erase --write`
+`python spi_flasher.py -port [PORT] -baud 921600 -file bios.rom --erase --write`
 
 NOTE 1: If you get a bunch of "Hash mismatch" messages, press "ctrl + C" and lower the baud rate
 
