@@ -137,7 +137,7 @@ def handle_serial_message(serial_connection, mute_info=False, mandatory=False):
     if len(output) == 0:
         if mandatory:
             raise Exception('Did not receive expected serial message')
-        return '', None
+        return ''
 
     message_type_char = output[0]
     message_data = output[1:]
