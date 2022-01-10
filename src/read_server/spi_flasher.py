@@ -9,6 +9,7 @@ import time
 import serial
 
 
+VERBOSE_ERROR_LOGGING = False
 DATA_CHUNK_SIZE = 2048
 DEFAULT_BAUD_RATE = 9600
 
@@ -81,7 +82,7 @@ def do_flash(rom_file, port, baud_rate, do_erase, do_write):
 
         write_command(esp_connection, 'SET_FILE_SIZE', rom_file_len)
         handle_serial_message(esp_connection)
-        print(f'File size set to {rom_file_len} bytes')
+        print(f'File size set to {rom_file_len} bytes\n')
 
     # Increase the timeout now that we're sending non-trivial data
     with serial.Serial(port, baud_rate, timeout=5) as esp_connection:
@@ -89,10 +90,14 @@ def do_flash(rom_file, port, baud_rate, do_erase, do_write):
             print('Sending erase command...')
             write_command(esp_connection, 'DO_ERASE')
 
-            # This also outputs the status of the erase
             print('Waiting on response from chip...')
-            while handle_serial_message(esp_connection) != 'Chip erased':
-                pass
+            while True:
+                msg = handle_serial_message(esp_connection, mute_info=True, unknown_ok=True)
+                if msg == 'Erasing chip...':
+                    print(msg)
+                elif msg == 'Chip erased':
+                    print(msg)
+                    break
 
         # Send data
         if do_write:
@@ -116,7 +121,7 @@ def do_flash(rom_file, port, baud_rate, do_erase, do_write):
 
                         # Wait for write to complete
                         while True:
-                            if handle_serial_message(esp_connection, mute_info=True) == 'W_OK':
+                            if handle_serial_message(esp_connection, mute_info=True, unknown_ok=True) == 'W_OK':
                                 break
 
                         break
@@ -137,7 +142,7 @@ def do_flash(rom_file, port, baud_rate, do_erase, do_write):
 # ------------
 # Helper methods
 
-def handle_serial_message(serial_connection, mute_info=False, mandatory=False):
+def handle_serial_message(serial_connection, mute_info=False, mandatory=False, unknown_ok=False):
     """
     Echoes INFO messages if mute_info is not True
     Raises exception on errors and unknown message types
@@ -157,7 +162,12 @@ def handle_serial_message(serial_connection, mute_info=False, mandatory=False):
     message_type = MESSAGE_TYPES.get(message_type_char, None)
 
     if message_type is None:
-        raise Exception(f'Unknown message type "{message_type_char}" with data "{message_data}"')
+        if unknown_ok:
+            # Either log or ignore
+            if not mute_info or (VERBOSE_ERROR_LOGGING and output != "Function executed successfully"):
+                print(output)
+        else:
+            raise Exception(f'Unknown message type "{message_type_char}" with data "{message_data}"')
 
     elif message_type == 'ERROR':
         raise Exception(message_data.replace('ERROR: ', ''))
