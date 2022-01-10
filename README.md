@@ -11,7 +11,8 @@
 3) Install the [PlatformIO CLI](https://docs.platformio.org/en/latest/core/installation.html) (or their [VSCode extension](https://docs.platformio.org/en/latest/integration/ide/vscode.html#installation))
 4) Configure `./src/SPI-Flasher/platformio.ini` if you don't have a nodemcuv2 compatible device
 5) Open `./src/SPI-Flasher/` in your shell and run `pio run --target upload`
-6) Check the datasheet for your flash chip and verify if there are any pull-up or pull-down resistors needed (NOTE: A pull-up resistor on the CS pin will cause boot loops; it is not needed)
+6) Check the datasheet for your flash chip and read the pin connection requirements (WP and HOLD should be inactive)
+	- NOTE: A pull-up resistor on the CS pin will cause boot loops; it is not needed
 7) Wire your flash chip to your device via the SPI pins ([example](docs/SPI-connection.png))
 
 &nbsp;
