@@ -206,9 +206,19 @@ def main():
         print('Provided file does not exist\nFlash failed')
         return
 
-    if initialize_device(args.port, args.baud) is False:
-        print('Flash failed')
-        return
+    for attempt in range(2):
+        try:
+            if initialize_device(args.port, args.baud) is False:
+                print('Flash failed')
+                return
+            break
+        
+        # The ESP* probably reset, try again
+        except UnicodeDecodeError:
+            if attempt == 1:
+                print('Got invalid data while communicating with device; check your connections\nFlash failed')
+                return
+            time.sleep(.5)
 
     flash_status_code = do_flash(args.file, args.port, args.baud, args.erase, args.write)
     if flash_status_code is False:
