@@ -9,7 +9,7 @@ const unsigned long INITIAL_SERIAL_BAUD_RATE = 9600;
 
 // ESP -> Host prefixes: ! = Error | @ = MD5 hash to verify | # = Information
 
-// Baud = ! | Erase = @ | Write = # | File Size = $ | Flash Data = % | Do Erase = ^ | Do Flash = &
+// Baud = ! | Erase = @ | Write = # | File Size = $ | Flash Data = % | Do Erase = ^ | Do Flash = & | Reset State = *
 enum states { NONE, SET_BAUD, SET_ERASE, SET_WRITE, SET_FILE_SIZE, RECV_FLASH_DATA, DO_ERASE, DO_FLASH, RESET_STATE };
 states state = NONE;
 
