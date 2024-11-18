@@ -20,7 +20,8 @@ COMMAND_CHARS = {
     'SEND_FLASH_DATA': b'%',
     'DO_ERASE': b'^',
     'DO_FLASH': b'&',
-    'DO_RESET': b'*'
+    'DO_RESET': b'*',
+    'GET_FLASH_INFO': b'('
 }
 
 MESSAGE_TYPES = {
@@ -39,6 +40,13 @@ def initialize_device(port, baud_rate):
 
     try:
         with serial.Serial(port, DEFAULT_BAUD_RATE, timeout=2) as esp_connection:
+            # This will raise an exception if communicaitng with the chip fails
+            print('\nFlash info:')
+            write_command(esp_connection, 'GET_FLASH_INFO', baud_rate)
+            for _ in range(5):
+                handle_serial_message(esp_connection)
+            print()
+
             write_command(esp_connection, 'SET_BAUD', baud_rate)
             handle_serial_message(esp_connection)
 

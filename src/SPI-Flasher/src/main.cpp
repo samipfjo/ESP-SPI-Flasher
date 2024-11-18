@@ -9,8 +9,8 @@ const unsigned long INITIAL_SERIAL_BAUD_RATE = 9600;
 
 // ESP -> Host prefixes: ! = Error | @ = MD5 hash to verify | # = Information
 
-// Baud = ! | Erase = @ | Write = # | File Size = $ | Flash Data = % | Do Erase = ^ | Do Flash = & | Reset State = *
-enum states { NONE, SET_BAUD, SET_ERASE, SET_WRITE, SET_FILE_SIZE, RECV_FLASH_DATA, DO_ERASE, DO_FLASH, RESET_STATE };
+// Baud = ! | Erase = @ | Write = # | File Size = $ | Flash Data = % | Do Erase = ^ | Do Flash = & | Reset State = * | Send Flash Info = (
+enum states { NONE, SET_BAUD, SET_ERASE, SET_WRITE, SET_FILE_SIZE, RECV_FLASH_DATA, DO_ERASE, DO_FLASH, RESET_STATE, SEND_FLASH_INFO };
 states state = NONE;
 
 // ----
@@ -20,6 +20,7 @@ void resetState();
 void handleSerialMessage();
 void handleData();
 
+void handleGetFlashInfo();
 void handleSetBaud();
 void handleSetErase();
 void handleSetWrite();
@@ -109,6 +110,7 @@ void handleSerialMessage() {
       case '^': state = DO_ERASE; break;
       case '&': state = DO_FLASH; break;
       case '*': state = RESET_STATE; break;
+      case '(': state = SEND_FLASH_INFO; break;
 
       case endMarker:
         messageLength = currRecvDataPos;
@@ -152,12 +154,27 @@ void handleData() {
     case DO_FLASH: handleDoFlash(); break;
     
     case RESET_STATE: resetState(); break;
+    case SEND_FLASH_INFO: handleGetFlashInfo(); break;
     
     case NONE: break;
   }
 
   messageLength = 0;
   dataNeedsHandling = false;
+}
+
+void handleGetFlashInfo() {
+  uint32_t JEDEC = flash.getJEDECID();
+  if (!JEDEC) {
+    Serial.println("!ERROR: Connection to flash failed; check wiring.");
+
+  } else {
+    Serial.print("#JEDEC ID: 0x"); Serial.println(JEDEC, HEX);
+    Serial.print("#Man ID: 0x"); Serial.println(uint8_t(JEDEC >> 16), HEX);
+    Serial.print("#Memory ID: 0x"); Serial.println(uint8_t(JEDEC >> 8), HEX);
+    Serial.print("#Capacity: "); Serial.println(flashSize);
+    Serial.print("#Max Pages: "); Serial.println(flash.getMaxPage());
+  }
 }
 
 // ----
