@@ -7,7 +7,7 @@
 
 #### Getting the ESP side running
 1) Make sure your device has at least 4MB of memory!
-2) Make sure your board's USB-to-serial drivers are installed
+2) Make sure your board's USB-to-serial drivers are installed - [Here is the most common one](https://www.silabs.com/developers/usb-to-uart-bridge-vcp-drivers)
 3) Install the [PlatformIO CLI](https://docs.platformio.org/en/latest/core/installation.html) (or their [VSCode extension](https://docs.platformio.org/en/latest/integration/ide/vscode.html#installation))
 4) Configure `./src/SPI-Flasher/platformio.ini` if you don't have a nodemcuv2 compatible device
 5) Open `./src/SPI-Flasher/` in your shell and run `pio run --target upload`
