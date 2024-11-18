@@ -36,14 +36,14 @@ NOTE 2: Erasing is mandatory prior to writes on (most) flash chips that have alr
 &nbsp;
 
 #### Flashing a BIOS chip
-- UEFI BIOSes
-	1) Check the last 512 bytes of the file in a hex editor ([HxD is a good one for Windows](https://mh-nexus.de/en/downloads.php?product=HxD20))
+1) UEFI BIOSes
+	a) Check the last 512 bytes of the file in a hex editor ([HxD is a good one for Windows](https://mh-nexus.de/en/downloads.php?product=HxD20))
 		- All `0xFF` means it is probably a bad image
-	2) Open the BIOS file with [UEFITool](https://github.com/LongSoft/UEFITool/releases)
-		a) Click the drop-down before `(...) capsule` and ensure it says "Intel Image"
-		b) Extract the image from the capsule (Action > Capsule > Extract Body)
-	3) Make sure the size of the image and the chip match exactly
-	4) Proceed with flashing
+	b) Open the BIOS file with [UEFITool](https://github.com/LongSoft/UEFITool/releases)
+		1) Click the drop-down before `(...) capsule` and ensure it says "Intel Image"
+		2) Extract the image from the capsule (Action > Capsule > Extract Body)
+	c) Make sure the size of the image and the chip match exactly
+	d) Proceed with flashing
 
 &nbsp;
 
