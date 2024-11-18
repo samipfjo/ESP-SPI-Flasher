@@ -142,7 +142,7 @@ void handleData() {
       dataLength = b64ToBytes(receivedMessage, messageLength, dataBuffer);
 
       if (dataLength == 0) {
-        Serial.println("!ERROR: Data length was 0 after conversion from base64");
+        Serial.println(F("!ERROR: Data length was 0 after conversion from base64"));
         resetState();
         return;
       }
@@ -166,14 +166,14 @@ void handleData() {
 void handleGetFlashInfo() {
   uint32_t JEDEC = flash.getJEDECID();
   if (!JEDEC) {
-    Serial.println("!ERROR: Connection to flash failed; check wiring.");
+    Serial.println(F("!ERROR: Connection to flash failed; check wiring."));
 
   } else {
-    Serial.print("#JEDEC ID: 0x"); Serial.println(JEDEC, HEX);
-    Serial.print("#Man ID: 0x"); Serial.println(uint8_t(JEDEC >> 16), HEX);
-    Serial.print("#Memory ID: 0x"); Serial.println(uint8_t(JEDEC >> 8), HEX);
-    Serial.print("#Capacity: "); Serial.println(flashSize);
-    Serial.print("#Max Pages: "); Serial.println(flash.getMaxPage());
+    Serial.print(F("#JEDEC ID: 0x")); Serial.println(JEDEC, HEX);
+    Serial.print(F("#Man ID: 0x")); Serial.println(uint8_t(JEDEC >> 16), HEX);
+    Serial.print(F("#Memory ID: 0x")); Serial.println(uint8_t(JEDEC >> 8), HEX);
+    Serial.print(F("#Capacity: ")); Serial.println(flashSize);
+    Serial.print(F("#Max Pages: ")); Serial.println(flash.getMaxPage());
   }
 }
 
@@ -182,7 +182,7 @@ void handleSetBaud() {
   uint32_t baudRate = b64ToInt(receivedMessage, messageLength, dataBuffer);
 
     if (baudRate > 921600) {
-      Serial.print("!ERROR: Invalid baudrate '");
+      Serial.print(F("!ERROR: Invalid baudrate '"));
       Serial.print(baudRate, HEX);
       Serial.println("'");
 
@@ -291,10 +291,10 @@ uint32_t byteArrayToInt(byte byteArray[], messagelen_t length) {
 }
 
 // --
-void byteArrayToHex(byte array[], unsigned int length, char output[]) {
+void byteArrayToHex(byte byteArray[], unsigned int length, char output[]) {
   for (unsigned int i = 0; i < length; i++) {
-        byte nib1 = (array[i] >> 4) & 0x0F;
-        byte nib2 = (array[i] >> 0) & 0x0F;
+        byte nib1 = (byteArray[i] >> 4) & 0x0F;
+        byte nib2 = (byteArray[i] >> 0) & 0x0F;
         output[i*2 + 0] = nib1 < 0xA ? '0' + nib1  : 'A' + nib1  - 0xA;
         output[i*2 + 1] = nib2 < 0xA ? '0' + nib2  : 'A' + nib2  - 0xA;
     }
