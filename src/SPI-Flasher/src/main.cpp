@@ -224,7 +224,7 @@ void eraseChip() {
     // eraseBlock64K causes soft reset for some reason?
     flash.eraseBlock32K(32768 * i);
 
-    err = flash.error();
+    err = flash.error(true);
     if (err != 0) {
       Serial.print(F("!ERROR: Flash error during erase in block at "));
       Serial.print(32768 * i);
@@ -244,7 +244,7 @@ void eraseChip() {
 // ----
 void writeData(byte data[], messagelen_t dataLength) {
   flash.writeByteArray(currentFlashOffset, data, dataLength);
-  int flashErrNo = flash.error();
+  int flashErrNo = flash.error(true);
 
   if (flashErrNo != 0) {
     Serial.print(F("!ERROR: Flash error during write in page at "));
