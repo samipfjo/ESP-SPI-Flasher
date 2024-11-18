@@ -65,19 +65,24 @@ def do_flash(rom_file, port, baud_rate, do_erase, do_write):
 
         write_command(esp_connection, 'SET_ERASE', b'1' if do_erase else b'0')
         handle_serial_message(esp_connection)
+        print('Erase preference set to ' + 'TRUE' if do_erase else 'FALSE')
 
         write_command(esp_connection, 'SET_WRITE', b'1' if do_write else b'0')
         handle_serial_message(esp_connection)
+        print('Write preference set to ' + 'TRUE' if do_write else 'FALSE')
 
         write_command(esp_connection, 'SET_FILE_SIZE', rom_file_len)
         handle_serial_message(esp_connection)
+        print(f'File size set to {rom_file_len} bytes')
 
     # Increase the timeout now that we're sending non-trivial data
     with serial.Serial(port, baud_rate, timeout=5) as esp_connection:
         if do_erase:
+            print('Sending erase command...')
             write_command(esp_connection, 'DO_ERASE')
 
             # This also outputs the status of the erase
+            print('Waiting on response from chip...')
             while handle_serial_message(esp_connection) != 'Chip erased':
                 pass
 
