@@ -1,6 +1,8 @@
 # ESP SPI Flasher
  A simple system to turn an ESP8266 or ESP32 into an SPI memory flasher
 
+## This project is no longer maintained and there have been several reports of it not working. There is an [ESP port of Bus Pirate](https://github.com/geo-tp/ESP32-Bus-Pirate) written by a different developer that you should use instead.
+
 &nbsp;
 
 ### Directions:
